@@ -3,7 +3,7 @@
 This repository contains selected applied econometrics projects developed using panel data methods.  
 The focus is on empirical analysis, reproducibility, and clear econometric identification.
 
-Projects included in this repository are curated to reflect research-oriented work rather than course assignments, emphasizing clarity of research questions and transparent empirical strategies.
+Projects included in this repository are curated to reflect research-oriented work, emphasizing clarity of research questions and transparent empirical strategies.
 
 ## Projects
 
