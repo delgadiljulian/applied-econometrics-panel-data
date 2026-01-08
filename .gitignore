@@ -1,0 +1,17 @@
+# Stata logs and output
+*.log
+*.smcl
+*.stlog
+
+# Backup files
+*.dta~
+*.do~
+*.ado~
+
+# Temporary files
+*.tmp
+*.temp
+
+# OS / editor files
+.DS_Store
+Thumbs.db
