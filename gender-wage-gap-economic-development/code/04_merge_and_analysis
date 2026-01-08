@@ -1,0 +1,398 @@
+// *********************************************
+// Nombre: Julián Alberto Delgadillo Marín
+// Programa: Maestría en Economía Aplicada
+// Asignatura: Econometría Aplicada
+// Taller: 2do Taller de Econometría Aplicada (Base de Datos de Brecha Salarial)
+// Fecha: Segundo Cuatrimestre 2024
+// *********************************************
+
+// *********************************************
+// Cargar el conjunto de datos y colapsar (Participación Laboral)
+// *********************************************
+
+* Cargar la base de datos
+clear
+cls
+use "C:\Users\julla\Downloads\1.1.1_participacion_2023-12.dta", clear
+
+// Variable: pais                // Etiqueta: País
+// Variable: encuesta            // Etiqueta: Encuesta
+// Variable: anio                // Etiqueta: Año
+
+// Variable: total               // Etiqueta: Tasa de participación laboral total
+// Variable: mujeres             // Etiqueta: Tasa de participación laboral de mujeres
+// Variable: hombres             // Etiqueta: Tasa de participación laboral de hombres
+// Variable: brecha              // Etiqueta: Brecha de participación laboral mujeres-hombres
+// Variable: error_std           // Etiqueta: Error estándar de la brecha mujeres-hombres
+
+// Variable: mujeres_sinhijos    // Etiqueta: Tasa de participación laboral de mujeres sin hijos
+// Variable: mujeres_hijos_05    // Etiqueta: Tasa de participación laboral de mujeres con hijos de 0 a 5 años
+// Variable: mujeres_hijos_6mas  // Etiqueta: Tasa de participación laboral de mujeres con hijos de 6 años o más
+// Variable: hombres_sinhijos    // Etiqueta: Tasa de participación laboral de hombres sin hijos
+// Variable: hombres_hijos_05    // Etiqueta: Tasa de participación laboral de hombres con hijos de 0 a 5 años
+// Variable: hombres_hijos_6mas  // Etiqueta: Tasa de participación laboral de hombres con hijos de 6 años o más
+
+// Variable: mujeres_solteras    // Etiqueta: Tasa de participación laboral de mujeres solteras
+// Variable: mujeres_enpareja    // Etiqueta: Tasa de participación laboral de mujeres en pareja
+// Variable: hombres_solteros    // Etiqueta: Tasa de participación laboral de hombres solteros
+// Variable: hombres_enpareja    // Etiqueta: Tasa de participación laboral de hombres en pareja
+
+// Variable: mujeres_bajacalif   // Etiqueta: Tasa de participación laboral de mujeres con baja calificación
+// Variable: mujeres_mediacalif  // Etiqueta: Tasa de participación laboral de mujeres con media calificación
+// Variable: mujeres_altacalif   // Etiqueta: Tasa de participación laboral de mujeres con alta calificación
+// Variable: hombres_bajacalif   // Etiqueta: Tasa de participación laboral de hombres con baja calificación
+// Variable: hombres_mediacalif  // Etiqueta: Tasa de participación laboral de hombres con media calificación
+// Variable: hombres_altacalif   // Etiqueta: Tasa de participación laboral de hombres con alta calificación
+
+* Realiza el collapse para promediar todas las variables relevantes, excluyendo pais, encuesta, anio, flag y descripcion_flag
+collapse (mean) total mujeres hombres brecha error_std mujeres_sinhijos mujeres_hijos_05 mujeres_hijos_6mas hombres_sinhijos hombres_hijos_05 hombres_hijos_6mas mujeres_solteras mujeres_enpareja hombres_solteros hombres_enpareja mujeres_bajacalif mujeres_mediacalif mujeres_altacalif hombres_bajacalif hombres_mediacalif hombres_altacalif, by(pais anio)
+
+* Guardar la base de datos después de colapsar
+save "C:\Users\julla\Downloads\1.1.1_participacion_2023-12_collapsed.dta", replace
+
+// *********************************************
+// Cargar el conjunto de datos y colapsar (Brecha Salarial)
+// *********************************************
+
+* Cargar la base de datos
+use "C:\Users\julla\Downloads\1.2.3_brecha_salarial_genero_2023-12.dta", clear
+
+// Variable: pais                // Etiqueta: País
+// Variable: encuesta            // Etiqueta: Encuesta
+// Variable: anio                // Etiqueta: Año
+// Variable: coef_mco            // Etiqueta: Coeficiente (MCO) Brecha Salarial
+// Variable: error_std_mco       // Etiqueta: Error estándar (MCO) Brecha Salarial
+// Variable: pais_num            // Etiqueta: País (numérico)
+// Variable: encuesta_num        // Etiqueta: Encuesta (numérico)
+
+* Realiza el collapse para promediar las variables relevantes, excluyendo pais, encuesta, anio, flag, descripcion_flag, pais_num, y encuesta_num
+collapse (mean) coef_mco error_std_mco, by(pais anio)
+
+* Guardar la base de datos después de colapsar
+save "C:\Users\julla\Downloads\1.2.3_brecha_salarial_genero_2023-12_collapsed.dta", replace
+
+* Cargar la base de datos colapsada de participación
+use "C:\Users\julla\Downloads\1.1.1_participacion_2023-12_collapsed.dta", clear
+
+// *********************************************
+// Cargar el conjunto de datos y colapsar (Nivel Educativo)
+// *********************************************
+
+* Cargar la base de datos
+use "C:\Users\julla\Downloads\1.3.1_anios_educacion_2023-12.dta", clear
+
+* Renombrar variables
+rename total edu_total
+rename mujeres edu_mujeres
+rename hombres edu_hombres
+rename brecha edu_brecha
+rename error_std edu_error_std
+rename mujeres_sinhijos edu_mujeres_sin_hijos
+rename mujeres_hijos_05 edu_mujeres_con_hijos_0_5
+rename mujeres_hijos_6mas edu_mujeres_con_hijos_6_ó_más
+rename hombres_sinhijos edu_hombres_sin_hijos
+rename hombres_hijos_05 edu_hombres_con_hijos_0_5
+rename hombres_hijos_6mas edu_hombres_con_hijos_6_ó_más
+rename mujeres_solteras edu_mujeres_solteras
+rename mujeres_enpareja edu_mujeres_en_pareja
+rename hombres_solteros edu_hombres_solteros
+rename hombres_enpareja edu_hombres_en_pareja
+
+// Variable: edu_total                // Etiqueta: Promedio de años de educación total
+// Variable: edu_mujeres              // Etiqueta: Promedio de años de educación de mujeres
+// Variable: edu_hombres              // Etiqueta: Promedio de años de educación de hombres
+// Variable: edu_brecha				  // Etiqueta: Brecha en años de educación entre mujeres y hombres
+// Variable: edu_error_std            // Etiqueta: Error estándar de la brecha en años de educación entre mujeres y hombres
+// Variable: edu_mujeres_sin_hijos    // Etiqueta: Promedio de años de educación de mujeres sin hijos
+// Variable: edu_mujeres_con_hijos_0_5 // Etiqueta: Promedio de años de educación de mujeres con hijos de 0 a 5 años
+// Variable: edu_mujeres_con_hijos_6_ó_más // Etiqueta: Promedio de años de educación de mujeres con hijos de 6 años o más
+// Variable: edu_hombres_sin_hijos    // Etiqueta: Promedio de años de educación de hombres sin hijos
+// Variable: edu_hombres_con_hijos_0_5 // Etiqueta: Promedio de años de educación de hombres con hijos de 0 a 5 años
+// Variable: edu_hombres_con_hijos_6_ó_más // Etiqueta: Promedio de años de educación de hombres con hijos de 6 años o más
+// Variable: edu_mujeres_solteras     // Etiqueta: Promedio de años de educación de mujeres solteras
+// Variable: edu_mujeres_en_pareja    // Etiqueta: Promedio de años de educación de mujeres en pareja
+// Variable: edu_hombres_solteros     // Etiqueta: Promedio de años de educación de hombres solteros
+// Variable: edu_hombres_en_pareja    // Etiqueta: Promedio de años de educación de hombres en pareja
+
+* Realiza el collapse para promediar todas las variables relevantes, excluyendo pais, encuesta, anio, flag y descripcion_flag
+collapse (mean) edu_total edu_mujeres edu_hombres edu_brecha edu_error_std edu_mujeres_sin_hijos edu_mujeres_con_hijos_0_5 edu_mujeres_con_hijos_6_ó_más edu_hombres_sin_hijos edu_hombres_con_hijos_0_5 edu_hombres_con_hijos_6_ó_más edu_mujeres_solteras edu_mujeres_en_pareja edu_hombres_solteros edu_hombres_en_pareja, by(pais anio)
+
+* Guardar la base de datos después de colapsar
+save "C:\Users\julla\Downloads\1.3.1_anios_educacion_2023-12_collapsed.dta", replace
+
+// *********************************************
+// Merge 1:1
+// *********************************************
+
+// Cargar la base de datos previamente colapsada de participación
+use "C:\Users\julla\Downloads\1.1.1_participacion_2023-12_collapsed.dta", clear
+
+// Realizar el primer merge con la base de datos colapsada de brecha salarial usando las variables pais y anio
+merge 1:1 pais anio using "C:\Users\julla\Downloads\1.2.3_brecha_salarial_genero_2023-12_collapsed.dta"
+
+// Verificar los resultados del merge
+tab _merge
+
+// Renombrar la variable _merge para evitar conflictos en el siguiente merge
+rename _merge merge1_status
+
+// Guardar la base de datos intermedia después del primer merge
+save "C:\Users\julla\Downloads\base_datos_pre_final_merged.dta", replace
+
+// Cargar la base de datos intermedia
+use "C:\Users\julla\Downloads\base_datos_pre_final_merged.dta", clear
+
+// Realizar el segundo merge con la base de datos de PIB
+merge 1:1 pais anio using "C:\Users\julla\Downloads\pib_usd_2015.dta"
+
+// Verificar los resultados del segundo merge
+tab _merge
+
+// Renombrar la variable _merge para evitar conflictos en el siguiente merge
+rename _merge merge2_status
+
+// Guardar la base de datos intermedia después del segundo merge
+save "C:\Users\julla\Downloads\base_datos_post_pib_merged.dta", replace
+
+// Cargar la base de datos intermedia
+use "C:\Users\julla\Downloads\base_datos_post_pib_merged.dta", clear
+
+// Realizar el tercer merge con la base de datos colapsada de educación usando las variables pais y anio
+merge 1:1 pais anio using "C:\Users\julla\Downloads\1.3.1_anios_educacion_2023-12_collapsed.dta"
+
+// Verificar los resultados del tercer merge
+tab _merge
+
+// Renombrar la variable _merge para evitar conflictos en el siguiente merge
+rename _merge merge3_status
+
+// Eliminar las columnas de merge
+drop merge1_status merge2_status merge3_status
+
+// Guardar la base de datos final sin las columnas de merge
+save "C:\Users\julla\Downloads\final_merged_data_with_education.dta", replace
+
+// *********************************************
+// Exploración Inicial de los Datos
+// *********************************************
+
+// Visualizar la estructura y los nombres de las variables
+describe, fullnames
+
+// Listar las primeras 10 observaciones para verificar los datos
+list in 1/10
+
+// Obtener un resumen estadístico detallado de todas las variables numéricas
+summarize, detail
+
+// Verificar las primeras 10 observaciones de las variables clave
+list pais anio total mujeres hombres brecha error_std coef_mco pib_usd_2015 in 1/10
+
+// Revisar si hay valores faltantes en las variables clave
+misstable summarize total mujeres hombres brecha error_std coef_mco pib_usd_2015
+
+// Generar una tabla de frecuencias para las variables categóricas
+tabulate pais
+
+// Verificar los valores de la variable de PIB para confirmar la conversión
+list pais anio pib_usd_2015 in 1/10
+
+// *********************************************
+// Estadísticas Descriptivas por País y Categorías
+// *********************************************
+
+// Resumir las variables numéricas: Coeficiente (MCO), Error estándar (MCO), Año
+summarize coef_mco error_std_mco anio
+
+* Resumir la brecha salarial (coef_mco) y el error estándar (error_std_mco) por país
+bysort pais: summarize coef_mco error_std_mco
+
+* Resumir la brecha salarial por país y año
+bysort pais anio: summarize coef_mco error_std_mco
+
+// Resumir las variables categóricas: País, Flag
+tabulate pais, missing
+
+* Estadística descriptiva general
+summarize total mujeres hombres brecha error_std ///
+         mujeres_sinhijos mujeres_hijos_05 mujeres_hijos_6mas ///
+         hombres_sinhijos hombres_hijos_05 hombres_hijos_6mas ///
+         mujeres_solteras mujeres_enpareja hombres_solteros hombres_enpareja ///
+         mujeres_bajacalif mujeres_mediacalif mujeres_altacalif ///
+         hombres_bajacalif hombres_mediacalif hombres_altacalif
+
+* Resumir la participación laboral total, de mujeres y hombres por país
+bysort pais: summarize total mujeres hombres
+
+* Resumir la participación laboral de mujeres y hombres según la presencia de hijos
+bysort pais: summarize mujeres_sinhijos mujeres_hijos_05 mujeres_hijos_6mas
+bysort pais: summarize hombres_sinhijos hombres_hijos_05 hombres_hijos_6mas
+
+* Resumir la participación laboral de mujeres y hombres según estado civil
+bysort pais: summarize mujeres_solteras mujeres_enpareja
+bysort pais: summarize hombres_solteros hombres_enpareja
+
+* Resumir la participación laboral de mujeres y hombres según nivel de calificación
+bysort pais: summarize mujeres_bajacalif mujeres_mediacalif mujeres_altacalif
+bysort pais: summarize hombres_bajacalif hombres_mediacalif hombres_altacalif
+
+// *********************************************
+// Generar Tablas Resumidas por País y Año
+// *********************************************
+
+// Crear una tabla resumen de la brecha salarial total por país usando tabstat
+encode pais, gen(pais_num)
+
+tabstat coef_mco error_std_mco, by(pais_num) statistics(mean) format(%9.2f)
+
+// Crear una tabla resumen de la brecha salarial por año usando tabstat
+tabstat coef_mco error_std_mco, by(anio) statistics(mean) format(%9.2f)
+
+// Crear una tabla resumen de la brecha salarial para cada país por año usando tabstat
+bysort pais_num: tabstat coef_mco error_std_mco, by(anio) statistics(mean) format(%9.2f)
+
+// Crear una tabla combinada que muestra las estadísticas por país y año
+table pais_num anio, ///
+    statistic(mean coef_mco) statistic(mean error_std_mco) ///
+    nformat(%9.2f)
+
+// Crear una tabla resumen de la participación laboral total por país usando tabstat
+tabstat total mujeres hombres, by(pais_num) statistics(mean) format(%9.2f)
+
+// Crear una tabla resumen de la participación laboral de mujeres y hombres según la presencia de hijos usando tabstat
+tabstat mujeres_sinhijos mujeres_hijos_05 mujeres_hijos_6mas hombres_sinhijos hombres_hijos_05 hombres_hijos_6mas, by(pais_num) statistics(mean) format(%9.2f)
+
+// Crear una tabla resumen de la participación laboral por estado civil usando tabstat
+tabstat mujeres_solteras mujeres_enpareja hombres_solteros hombres_enpareja, by(pais_num) statistics(mean) format(%9.2f)
+
+// Crear una tabla resumen de la participación laboral por nivel de calificación usando tabstat
+tabstat mujeres_bajacalif mujeres_mediacalif mujeres_altacalif hombres_bajacalif hombres_mediacalif hombres_altacalif, by(pais_num) statistics(mean) format(%9.2f)
+
+// *********************************************
+// Preparación de datos
+// *********************************************
+
+// Calcular el logaritmo del PIB per cápita
+gen ln_pbi_pcct = log(pib_usd_2015) 
+
+// *********************************************
+// 1. Modelo MCO
+// *********************************************
+
+// *********************************************
+// Modelo 1: MCO sin la variable de control
+// Usar "brecha" como variable dependiente
+reg brecha ln_pbi_pcct mujeres i.pais_num i.anio
+
+estimates store MCO_no_control
+
+// Calcular medidas adicionales de bondad de ajuste para el Modelo 1
+estat ic   // AIC y BIC
+estat hettest // Prueba de heterocedasticidad
+
+// Análisis de multicolinealidad para Modelo 1
+reg ln_pbi_pcct mujeres i.pais_num i.anio, robust
+estat vif
+
+// *********************************************
+// Modelo 2: MCO con la variable de control 
+reg brecha ln_pbi_pcct mujeres edu_brecha i.pais_num i.anio // Variable de control (edu_mujeres ; edu_mujeres_solteras ; edu_mujeres_con_hijos_0_5 ; edu_mujeres_con_hijos_6_ó_más ; edu_mujeres_en_pareja ; edu_brecha ; total ; hombres_hijos_05 ; hombres_altacalif ; edu_hombres_en_pareja ; edu_hombres_solteros)
+
+estimates store MCO_with_control
+
+// Calcular medidas adicionales de bondad de ajuste para el Modelo 2
+estat ic   // AIC y BIC
+estat hettest // Prueba de heterocedasticidad
+
+// Análisis de multicolinealidad para Modelo 2 (Inlcuir variable/variables de control)
+reg ln_pbi_pcct mujeres edu_brecha i.pais_num i.anio, robust
+estat vif
+
+// *********************************************
+// Comparar los modelos MCO en una tabla en la consola
+esttab MCO_no_control MCO_with_control, se compress
+
+// *********************************************
+// 2. Modelo Within
+// *********************************************
+
+// Establecer la estructura de datos de panel
+xtset pais_num anio
+
+// *********************************************
+// Modelo 1: Within sin la variable de control
+xtreg brecha ln_pbi_pcct mujeres, fe robust
+
+estimates store Within_no_control
+
+// Calcular medidas adicionales de bondad de ajuste para el Modelo 1
+estat ic   // AIC y BIC
+
+// *********************************************
+// Modelo 2: Within con la variable de control (mujeres_solteras ;)
+xtreg brecha ln_pbi_pcct mujeres hombres_sinhijos, fe robust // Variable de control (mujeres_solteras ; hombres_enpareja ; hombres_sinhijos ; hombres_hijos_05 ; hombres_hijos_6mas ; hombres_mediacalif ; hombres_altacalif)
+
+estimates store Within_with_control
+
+// Calcular medidas adicionales de bondad de ajuste para el Modelo 2
+estat ic   // AIC y BIC
+
+// *********************************************
+// Comparar los modelos Within en una tabla en la consola
+esttab Within_no_control Within_with_control, se compress
+
+// *********************************************
+// 3. Modelo TWFE
+// *********************************************
+
+// *********************************************
+// Modelo 1: TWFE sin la variable de control
+reghdfe brecha ln_pbi_pcct mujeres, absorb(pais_num anio) vce(cluster pais_num)
+
+estimates store TWFE_no_control
+
+// Calcular medidas adicionales de bondad de ajuste para el Modelo 1
+estat ic   // AIC y BIC
+
+// *********************************************
+// Modelo 2: TWFE con la variable de control
+reghdfe brecha ln_pbi_pcct mujeres total, absorb(pais_num anio) vce(cluster pais_num) 
+// Variable de control (total ; pib_usd_2015)
+
+estimates store TWFE_with_control
+
+// Calcular medidas adicionales de bondad de ajuste para el Modelo 2
+estat ic   // AIC y BIC
+
+// *********************************************
+// Comparar los modelos TWFE en una tabla en la consola
+esttab TWFE_no_control TWFE_with_control, se compress
+
+// *********************************************
+// Análisis de multicolinealidad en variables no absorbidas para Within y TWFE
+// *********************************************
+
+// Usar las variables no absorbidas para verificar multicolinealidad
+reg ln_pbi_pcct mujeres total, robust
+estat vif
+
+// *********************************************
+// Análisis Gráfico Inicial 
+// *********************************************
+
+* Generar un histograma para visualizar la distribución de la variable 'brecha'
+histogram brecha, frequency title("Distribución de la Brecha Mujeres-Hombres")
+
+* Generar un gráfico de líneas para visualizar la evolución de la tasa de participación laboral de mujeres a lo largo de los años
+twoway (line mujeres anio), by(pais) title("Evolución de la Tasa de Participación Laboral de Mujeres (por país)")
+
+* Generar un histograma para visualizar la distribución de la brecha salarial (coef_mco)
+histogram coef_mco, frequency title("Distribución de la Brecha Salarial de Género (coef_mco)")
+
+* Generar un gráfico de líneas para visualizar la evolución de la brecha salarial a lo largo de los años
+twoway (line coef_mco anio), by(pais) title("Evolución de la Brecha Salarial de Género (por país)")
+
+// *********************************************
+// Resumen y Conclusiones
+// *********************************************
+...
